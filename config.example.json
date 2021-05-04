@@ -1,0 +1,46 @@
+{
+  "platforms": [
+    {
+      "name": "Monitor DDC/CI",
+      "devices": [
+        {
+          "uniqueId": "DellMonitor",
+          "displayName": "Monitor",
+          "manufacturer": "Dell",
+          "model": "S-21DGF",
+          "serialNumber": "123456789",
+          "mode": "ssh",
+          "sshConfig": {
+            "host": "root@10.0.0.10",
+            "privateKey": "~/.ssh/id_rsa"
+          },
+          "onCommand": "ddcutil setvcp d6 1",
+          "offCommand": "ddcutil setvcp d6 5",
+          "getStatusCommand": "ddcutil getvcp d6",
+          "getInputCommand": "ddcutil getvcp 60",
+          "responsePattern": ".*\\(sl=(.*)\\)",
+          "onValue": "0x01",
+          "sources": [
+            {
+              "name": "DisplayPort",
+              "activeValue": "0x0f",
+              "activeCommand": "ddcutil setvcp 60 0x0f",
+              "additionalCommands": ["virsh-manage-usb reattach m,kb"]
+            },
+            {
+              "name": "HDMI-1",
+              "activeValue": "0x11",
+              "activeCommand": "ddcutil setvcp 60 0x11"
+            },
+            {
+              "name": "HDMI-2",
+              "activeValue": "0x12",
+              "activeCommand": "ddcutil setvcp 60 0x12"
+            }
+          ]
+        }
+      ],
+      "platform": "DDC/CI"
+    }
+  ]
+}

@@ -1,15 +1,207 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "DDC/CI",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
+    "required": ["name", "platform", "devices"],
     "properties": {
       "name": {
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "Monitor DDC/CI"
+      },
+      "platform": {
+        "title": "Platform",
+        "type": "string",
+        "required": true,
+        "default": "DDC/CI"
+      },
+      "devices": {
+        "type": "array",
+        "required": true,
+        "items": {
+          "type": "object",
+          "required": [
+            "uniqueId",
+            "mode",
+            "displayName",
+            "onCommand",
+            "offCommand",
+            "getStatusCommand",
+            "getInputCommand",
+            "responsePattern",
+            "onValue",
+            "sources"
+          ],
+          "properties": {
+            "uniqueId": {
+              "title": "Unique ID",
+              "type": "string",
+              "required": true,
+              "default": "Monitor1"
+            },
+            "mode": {
+              "title": "Exec Mode",
+              "type": "string",
+              "required": true,
+              "enum": ["local", "ssh"],
+              "default": "local",
+              "description": "Execute commands on local device or remote host via SSH"
+            },
+            "sshConfig": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "title": "Host",
+                  "type": "string",
+                  "required": false,
+                  "examples": ["hostname", "192.168.1.10", "user@host"]
+                },
+                "username": {
+                  "type": "string",
+                  "title": "Username",
+                  "required": false,
+                  "examples": ["jimbob"]
+                },
+                "password": {
+                  "type": "string",
+                  "title": "Password",
+                  "required": false,
+                  "examples": ["plaintextpass123"]
+                },
+                "agent": {
+                  "type": "string",
+                  "title": "Socket Path",
+                  "required": false,
+                  "description": "UNIX socket for ssh-agent-based user authentication\nDefaults to process.env.SSH_AUTH_SOCK"
+                },
+                "privateKey": {
+                  "type": "string",
+                  "title": "Private Key",
+                  "required": false,
+                  "examples": ["~/.ssh/id_rsa"],
+                  "description": "Private key or path to key in OpenSSH format"
+                },
+                "passphrase": {
+                  "type": "string",
+                  "title": "Private Key Passphrase",
+                  "required": false,
+                  "examples": ["plaintextpass123"],
+                  "description": "Passphrase used to decrypt an encrypted private key"
+                },
+                "publicKey": {
+                  "type": "string",
+                  "title": "Public Key",
+                  "required": false,
+                  "examples": ["~/.ssh/id_rsa.pub"],
+                  "description": "Public key or path to key in OpenSSH format"
+                },
+                "proxy": { "type": "string", "title": "", "required": false, "examples": [""] }
+              }
+            },
+            "displayName": {
+              "title": "Display Name",
+              "type": "string",
+              "required": true,
+              "default": "Monitor 1"
+            },
+            "onCommand": {
+              "title": "On Command",
+              "type": "string",
+              "required": true,
+              "default": "ddcutil setvcp d6 1"
+            },
+            "offCommand": {
+              "title": "Off Command",
+              "type": "string",
+              "required": true,
+              "default": "ddcutil setvcp d6 5"
+            },
+            "getStatusCommand": {
+              "title": "Status Command",
+              "type": "string",
+              "required": true,
+              "default": "ddcutil getvcp d6"
+            },
+            "getInputCommand": {
+              "title": "Get Input Command",
+              "type": "string",
+              "required": true,
+              "default": "ddcutil getvcp 60"
+            },
+            "responsePattern": {
+              "title": "Response Pattern",
+              "type": "string",
+              "required": true,
+              "default": ".*\\(sl=(.*)\\)"
+            },
+            "onValue": {
+              "title": "On Value",
+              "type": "string",
+              "required": true,
+              "default": "0x01"
+            },
+            "sources": {
+              "type": "array",
+              "required": true,
+              "items": {
+                "type": "object",
+                "required": ["name", "activeValue", "activeCommand"],
+                "properties": {
+                  "name": {
+                    "title": "Input Name",
+                    "type": "string",
+                    "required": true,
+                    "examples": "DisplayPort"
+                  },
+                  "activeValue": {
+                    "title": "Active Value",
+                    "type": "string",
+                    "required": true,
+                    "examples": ["0x11", "0x12", "0x0f"]
+                  },
+                  "activeCommand": {
+                    "title": "Set Input Command",
+                    "type": "string",
+                    "required": true,
+                    "default": "ddcutil setvcp 60 [active_value]",
+                    "examples": "ddcutil setvcp 60 0x0f"
+                  },
+                  "additionalCommands": {
+                    "title": "Additional Commands",
+                    "type": "array",
+                    "required": false,
+                    "description": "Commands to run after successfully selecting device input",
+                    "items": {
+                      "type": "string",
+                      "examples": ["virsh attach-device win10 ua-mouse"]
+                    }
+                  }
+                }
+              }
+            },
+            "manufacturer": {
+              "title": "Manufacturer",
+              "type": "string",
+              "required": false,
+              "default": "Generic"
+            },
+            "model": {
+              "title": "Model",
+              "type": "string",
+              "required": false,
+              "default": "N/A"
+            },
+            "serialNumber": {
+              "title": "Serial Number",
+              "type": "string",
+              "required": false,
+              "default": "N/A"
+            }
+          }
+        }
       }
     }
   }

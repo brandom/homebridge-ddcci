@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["platforms"],
+  "properties": {
+    "platforms": {
+      "type": "array",
+      "items": {
+        "$ref": "./config.schema.json#schema"
+      }
+    }
+  }
+}
